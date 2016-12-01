@@ -8,7 +8,7 @@ info:
 
 externalDocs:
   description: External docs
-  url: http://example.github.io/
+  url: https://github.bus.zalan.do/jyun/nakadi-mock-clj
 
 # technical configuration
 basePath: /
@@ -27,28 +27,37 @@ paths:
         default:
           description: "Redirects to /ui/"
 
-  '/hello/{name}':
+  '/subscriptions':
     get:
-      summary: Says hello
+      summary: Get every subscriptions
       description: |
-        Says hello personally to {name}
-      parameters:
-        - $ref: '#/parameters/Name'
+        Returns every subscriptions stored in mock server
       tags:
-        - General
-      operationId: "nakadi-mock-clj.api/get-hello"
+        - Subscription
+      operationId: "nakadi-mock-clj.api/list-subscription"
       responses:
         200:
-          description: Hello is said
+          description: Ok
         default:
           $ref: '#/responses/Error'
-
-parameters:
-  Name:
-    name: name
-    in: path
-    type: string
-    description: Name of the person to greet
+    post:
+      summary: Save new subscription
+      description: |
+        Saves new subscription which passed as request body
+      tags:
+        - Subscription
+      operationId: "nakadi-mock-clj.api/save-subscription"
+      responses:
+        201:
+          description: Saved New
+        200:
+          description: Already have identical one, not updated
+        400:
+          description: Request with unknown fields
+        422:
+          description: Request without required fields
+        default:
+          $ref: '#/responses/Error'
 
 responses:
   Error:

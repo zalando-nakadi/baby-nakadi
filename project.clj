@@ -1,8 +1,6 @@
 (defproject nakadi-mock-clj "0.0.1-SNAPSHOT"
-  :description "Example project based on zalando/friboo"
-  :url "http://example.com/FIXME"
-  :license {:name "The Apache License, Version 2.0"
-            :url  "http://www.apache.org/licenses/LICENSE-2.0"}
+  :description "Nakadi-mock rewritten in Clojure/Friboo"
+  :url "https://github.bus.zalan.do/jyun/nakadi-mock-clj"
   :min-lein-version "2.0.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.zalando.stups/friboo "2.0.0-beta5"]]
