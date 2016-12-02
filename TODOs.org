@@ -1,0 +1,8 @@
+
+* TODO refactor namespaces.
+  - --> net.zalando...
+
+* TODO write tests.
+  - SEE: https://github.com/zalando-stups/pierone
+
+

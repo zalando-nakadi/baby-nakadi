@@ -3,7 +3,8 @@
             [org.zalando.stups.friboo.log :as log]
             [org.zalando.stups.friboo.config :refer [require-config]]
             [com.stuartsierra.component :as component]
-            [ring.util.response :as r]))
+            [ring.util.response :as r]
+            [clojure.set :as set]))
 
 (defrecord Controller [configuration]
   component/Lifecycle
@@ -14,18 +15,27 @@
     (log/info "Stopping API Controller")
     this))
 
-;;; TODO:
-(defn list-subscription
-  "Says hello"
-  [{:as this :keys [configuration]} {:as params :keys [name]} request]
-  (log/debug "API configuration: %s" configuration)
-  (log/info "Hello called for %s" name)
-  (r/response {:message (str "Hello " name) :details {:X-friboo (require-config configuration :example-param)}}))
+(def subscriptions (ref []))
 
-;;; TODO: 
+(defn list-subscription
+  "Returns every subscriptions"
+  [this params request]
+  (r/response @subscriptions))
+
+(defn uuid [] (str (java.util.UUID/randomUUID)))
+
+(def ^:const required-keys #{:event_types :owning_application :consumer_group})
+
+(def ^:const known-keys (set/union required-keys #{:start_from}))
+
 (defn save-subscription
-  "Says hello"
-  [{:as this :keys [configuration]} {:as params :keys [name]} request]
-  (log/debug "API configuration: %s" configuration)
-  (log/info "Hello called for %s" name)
-  (r/response {:message (str "Hello " name) :details {:X-friboo (require-config configuration :example-param)}}))
+  "Save given subscription"
+  [this params request]
+  ;; TODO:
+  (dosync (alter subscriptions conj (uuid)))
+  ;; TODO:
+  (r/response {:message (str "Hello ")}))
+               
+
+
+
