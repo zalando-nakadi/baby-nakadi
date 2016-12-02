@@ -27,6 +27,22 @@ paths:
         default:
           description: "Redirects to /ui/"
 
+  '/hello/{name}':
+    get:
+      summary: Says hello
+      description: |
+        Says hello personally to {name}
+      parameters:
+        - $ref: '#/parameters/Hello-Name'
+      tags:
+        - General
+      operationId: "nakadi-mock-clj.api/get-hello"
+      responses:
+        200:
+          description: Hello is said
+        default:
+          $ref: '#/responses/Error'          
+
   '/subscriptions':
     get:
       summary: Get every subscriptions
@@ -59,6 +75,13 @@ paths:
         default:
           $ref: '#/responses/Error'
 
+parameters:
+  Hello-Name:
+    name: name
+    in: path
+    type: string
+    description: Name of the person to greet
+    
 responses:
   Error:
     description: An error occured.

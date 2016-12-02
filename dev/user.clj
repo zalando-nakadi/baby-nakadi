@@ -6,6 +6,7 @@
             [clojure.reflect :refer [reflect]]
             [clojure.repl :refer [apropos dir doc find-doc pst source]]
             [clojure.tools.namespace.repl :refer [refresh refresh-all]]
+            [midje.repl :refer :all]
             [com.stuartsierra.component :as component]
             [clojure.test :refer [run-all-tests]]
             [nakadi-mock-clj.core :as core]

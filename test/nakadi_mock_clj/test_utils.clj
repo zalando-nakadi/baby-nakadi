@@ -8,7 +8,7 @@
             [org.zalando.stups.friboo.log :as log]))
 
 
-(defn http-port [] (+ (rand-int 100) 8088))
+(defn http-port [] (dev/get-free-port))
 
 
 ;; A Var containing an object representing the application under development.
