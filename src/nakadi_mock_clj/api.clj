@@ -34,7 +34,10 @@
   (dosync (ref-set subscriptions [])))
 
 (defn append-to-subscriptions [item]
-  (dosync (alter subscriptions conj item)))
+  (letfn [(decor [s] (merge s {"start_from" "end",
+                               "id" (uuid-v4),
+                               "created_at" (local-date-time-str-now)}))]
+    (dosync (alter subscriptions conj (decor item)))))
 
 (defn list-subscription
   "Returns every subscriptions"
@@ -47,6 +50,14 @@
 
 (def ^:const known-keys (set/union required-keys #{"start_from"}))
 
+(defn- find-missing-fields [s]
+  (let [ks (set (keys s))]
+    (set/difference required-keys ks)))
+
+(defn- find-unknown-fields [s]
+  (let [ks (set (keys s))]
+    (set/difference ks known-keys)))
+
 (defn- request-json [request]
   (let [body-reader (io/reader (:body request))
         body-str (slurp body-reader)]
@@ -56,21 +67,24 @@
   "Save given subscription"
   [this params request]
   (let [req-json (request-json request)]
-    (append-to-subscriptions req-json)
-    (r/response {:message (str "Hello ")})))
+    ;; TODO: check mandatory fields?
+    ;; TODO: check unknown fields?
+    ;; check is it already in subscriptions?
+    (if (in-subscriptions? req-json)
+      ;; status = 200. ok but not saved/updated.
+      (do)
+      ;; status = 201, created!
+      (do
+        (append-to-subscriptions req-json)
+        (r/response {:message (str "Hello ")})))))
                
 
-(defn- decorate-subscription [s]
-  (merge s {"start_from" "end",
-            "id" (uuid-v4),
-            "created_at" (local-date-time-str-now)}))
-
-(defn- already-in-subscriptions? [s]
+(defn- in-subscriptions? [s]
   (letfn [(subscription-eq? [a b]
             (and (= (a "owning_application") (b "owning_application"))
                  (= (a "event_types") (b "event_types"))
                  (= (a "consumer_group") (b "consumer_group"))))]
-    (some #(subscription-eq? s %) subscriptions)))
+    (some #(subscription-eq? s %) @subscriptions)))
 
 
 
