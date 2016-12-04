@@ -39,12 +39,15 @@
   (let [ks (set (keys s))]
     (set/difference ks known-keys)))
 
-(defn in-subscriptions? [s]
-  (letfn [(subscription-eq? [a b]
-            (and (= (a "owning_application") (b "owning_application"))
-                 (= (a "event_types") (b "event_types"))
-                 (= (a "consumer_group") (b "consumer_group"))))]
-    (first (filter #(subscription-eq? s %) @subscriptions))))
+(defn subscription=? [a b]
+  (and (= (a "owning_application") (b "owning_application"))
+       (= (a "event_types") (b "event_types"))
+       (= (a "consumer_group") (b "consumer_group"))))
+
+(defn in-subscriptions?
+  ([s l]
+    (first (filter #(subscription=? s %) l)))
+  ([s] (in-subscriptions? s @subscriptions)))
 
 (defn append-to-subscriptions+ [s]
   (let [missings (find-missing-fields s)
@@ -56,7 +59,7 @@
                       {:type :missing-fields :fields missings}))
       ;; check unknown fields?
       (not (empty? unknowns))
-      (throw (ex-info "unknown field(s)"
+      (throw (ex-info "Unknown field(s)"
                       {:type :unknown-fields :fields unknowns}))
       ;; check is it already in subscriptions?
       :else

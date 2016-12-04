@@ -80,7 +80,32 @@
            (fact (s-after "id") => uuid-regex)
            (fact (s-after "created_at") => date-time-regex))))
 
+(deftest subscriptions-membership
+  (let [s {"event_types" [:e1 :e2]
+           "owning_application" :a1
+           "consumer_group" :g1}]
+    (facts (subscriptions/in-subscriptions? s []) => #(or (false? %) (nil? %)))
+    (facts (subscriptions/in-subscriptions? s [s]) => s)))
 
+(deftest subscription-equality
+  (let [s {"event_types" [:e1 :e2]
+           "owning_application" :a1
+           "consumer_group" :g1}
+        t1 {"event_types" [:e1 :e3]
+            "owning_application" :a1
+            "consumer_group" :g1}
+        t2 {"event_types" [:e1 :e2]
+            "owning_application" :a2
+            "consumer_group" :g1}
+        t3 {"event_types" [:e1 :e2]
+            "owning_application" :a1
+            "consumer_group" "g1"}
+        s2 (subscriptions/decorate-subscription s)]
+    (facts (subscriptions/subscription=? s t1) => false)
+    (facts (subscriptions/subscription=? s s2) => true)
+    (facts (subscriptions/subscription=? s t2) => false)
+    (facts (subscriptions/subscription=? s t3) => false)))
+  
 (deftest the-ultimate-append+-function
   (facts "Cleared & empty"
          (subscriptions/clear-subscriptions))

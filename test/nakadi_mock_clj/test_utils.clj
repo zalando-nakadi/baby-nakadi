@@ -43,12 +43,13 @@
   "Run body within HTTP server is running context. Server's randomly
   chosen port number will bound to http-port sym."
   [http-port-sym & body]
-  `(do
-     (let [~http-port-sym ~(http-port)]
-       (log/info "Temporary HTTP port number = %s" ~http-port-sym)
+  `(let [~http-port-sym ~(http-port)]
+     (log/info "Temporary HTTP port number = %s" ~http-port-sym)
+     (try
        (go {:http-port ~http-port-sym})
        ~@body
-       (stop))))
+       (finally
+         (stop)))))
   
 
 

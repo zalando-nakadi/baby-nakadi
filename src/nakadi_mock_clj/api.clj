@@ -40,6 +40,9 @@
         body-str (slurp body-reader)]
     (json/decode body-str)))
 
+(defn- error-response [e-i msg status]
+  (r/status (r/response (merge e-i {:message msg})) status))
+  
 (defn save-subscription
   "Save given subscription"
   [this params request]
@@ -49,13 +52,9 @@
            (r/status (r/response s) status-code))
          (catch clojure.lang.ExceptionInfo e
            (let [i (ex-data e)]
-             (case :type
+             (case (:type i)
                :unknown-fields
-               (r/status (r/response
-                          (format "%s -- unknown-fields=%s" (:type i) (:fields e)))
-                         400)
+               (error-response i "unknown-fields" 400)
                :missing-fields
-               (r/status (r/response
-                          (format "%s -- missing-fields=%s" (:type i) (:fields e)))
-                         422)
+               (error-response i "missing-fields" 422)
                (throw e)))))))
