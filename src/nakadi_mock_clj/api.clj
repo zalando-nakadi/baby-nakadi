@@ -38,35 +38,24 @@
 (defn- request-json [request]
   (let [body-reader (io/reader (:body request))
         body-str (slurp body-reader)]
-       (json/decode body-str)))
+    (json/decode body-str)))
 
 (defn save-subscription
   "Save given subscription"
   [this params request]
-  (let [req-json (request-json request)
-        missing-fields (subscriptions/find-missing-fields req-json)
-        unknown-fields (subscriptions/find-unknown-fields req-json)]
-    (cond
-      ;; check mandatory fields?
-      (not (empty missing-fields))
-      ;; TODO: 422
-      (throw (format "Missing Field (%s)" (s/join ", " missing-fields)))
-      ;; check unknown fields?
-      (not (empty unknown-fields))
-      ;; TODO: 400
-      (throw (format "Unknown Field (%s)" (s/join ", " unknown-fields)))
-      ;; check is it already in subscriptions?
-      :else
-      (do
-        (if (subscriptions/in-subscriptions? req-json)
-          ;; status = 200. ok but not saved/updated.
-          200
-          ;; status = 201, created!
-          (do
-            (subscriptions/append-to-subscriptions req-json)
-            201))
-        (r/response {:message (str "Hello ")})))))
-               
-
-
-
+  (let [req-json (request-json request)]
+    (try (let [[added? s] (subscriptions/append-to-subscriptions+ req-json)
+               status-code (if added? 201 200)]
+           (r/status (r/response s) status-code))
+         (catch clojure.lang.ExceptionInfo e
+           (let [i (ex-data e)]
+             (case :type
+               :unknown-fields
+               (r/status (r/response
+                          (format "%s -- unknown-fields=%s" (:type i) (:fields e)))
+                         400)
+               :missing-fields
+               (r/status (r/response
+                          (format "%s -- missing-fields=%s" (:type i) (:fields e)))
+                         422)
+               (throw e)))))))

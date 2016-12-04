@@ -44,7 +44,31 @@
             (and (= (a "owning_application") (b "owning_application"))
                  (= (a "event_types") (b "event_types"))
                  (= (a "consumer_group") (b "consumer_group"))))]
-    (some #(subscription-eq? s %) @subscriptions)))
+    (first (filter #(subscription-eq? s %) @subscriptions))))
+
+(defn append-to-subscriptions+ [s]
+  (let [missings (find-missing-fields s)
+        unknowns (find-unknown-fields s)]
+    (cond
+      ;; check mandatory fields?
+      (not (empty? missings))
+      (throw (ex-info "Missing field(s)"
+                      {:type :missing-fields :fields missings}))
+      ;; check unknown fields?
+      (not (empty? unknowns))
+      (throw (ex-info "unknown field(s)"
+                      {:type :unknown-fields :fields unknowns}))
+      ;; check is it already in subscriptions?
+      :else
+      (if-let [found (in-subscriptions? s)]
+        ;; already contains, never updates.
+        [false found]
+        ;; append.
+        (let [s2 (decorate-subscription s)]
+          (append-to-subscriptions s2)
+          [true s2])))))
+               
 
 
-;; TODO: master append function?
+
+
