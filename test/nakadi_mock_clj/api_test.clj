@@ -5,7 +5,8 @@
             [clojure.string :as s]
             [cheshire.core :as json]
             [nakadi-mock-clj.test-utils :as test-utils]
-            [nakadi-mock-clj.api :refer :all]))
+            [nakadi-mock-clj.api :refer :all]
+            [nakadi-mock-clj.subscriptions :as subscriptions]))
 
 (defn decode-some-json-plz []
   (http-client/json-decode
@@ -30,7 +31,7 @@
 (deftest subscriptions-facts
   (facts "GET /subscriptions"
          (facts "displays an empty subscription list"
-                (clear-subscriptions)
+                (subscriptions/clear-subscriptions)
                 (test-utils/with-server http-port
                   (let [resp (http-client/get (api-url http-port ["subscriptions"]))
                         resp-json (json/parse-string (:body resp))
@@ -40,14 +41,14 @@
                     (fact "expect content-type =~ /json/" resp-content-type => #"json")
                     (fact "empty subscription list" resp-json => []))))
          (facts "retrieves registered subscriptions"
-                (clear-subscriptions)
+                (subscriptions/clear-subscriptions)
                 (test-utils/with-server http-port
                   (let [url (api-url http-port ["subscriptions"])
                         orig-doc {"owning_application" "nakadi-mock"
                                   "event_types" ["event1"]
                                   "consumer_group" "slurper"}
                         json-doc (json/encode orig-doc)]
-                    ;; POST /subscriptions
+                    ;; TODO: POST /subscriptions
                     (println (http-client/post url {:body json-doc :content-type "application/json"}))
                     )))
          )
