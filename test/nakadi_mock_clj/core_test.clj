@@ -19,3 +19,4 @@
           => (contains {:status 200 :body {:details {:X-friboo "foo"}, :message "Hello Friboo"}}))
         (finally
           (component/stop system))))))
+

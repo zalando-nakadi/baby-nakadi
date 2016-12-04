@@ -8,7 +8,7 @@
             [clojure.tools.namespace.repl :refer [refresh refresh-all]]
             [midje.repl :refer :all]
             [com.stuartsierra.component :as component]
-            [clojure.test :refer [run-all-tests]]
+            [clojure.test :refer [run-tests run-all-tests]]
             [nakadi-mock-clj.core :as core]
             [org.zalando.stups.friboo.system :as system]
             [org.zalando.stups.friboo.dev :as dev]))
@@ -47,11 +47,13 @@
   (stop)
   (refresh :after 'user/go))
 
-(defn run-tests []
-  (run-all-tests #"nakadi-mock-clj.*-test"))
+(comment
+  (defn run-tests []
+    (run-all-tests #"nakadi-mock-clj.*-test"))
 
-(defn tests
-  "Stops the system, reloads modified source files and runs tests"
-  []
-  (stop)
-  (refresh :after 'user/run-tests))
+  (defn tests
+    "Stops the system, reloads modified source files and runs tests"
+    []
+    (stop)
+    (refresh :after 'user/run-tests))
+  )
