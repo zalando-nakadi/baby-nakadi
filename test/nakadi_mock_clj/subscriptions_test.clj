@@ -18,7 +18,7 @@
              (subscriptions/local-date-time-str-now)
              => date-time-regex))
 
-(facts "Subscriptions"
+(facts "Basic subscriptions functions"
        (fact "dumb clear, append one, and clear again"
              (subscriptions/clear-subscriptions)
              (subscriptions/append-to-subscriptions {:name "Max" :age 42})
