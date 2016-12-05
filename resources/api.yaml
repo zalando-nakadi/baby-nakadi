@@ -36,7 +36,7 @@ paths:
         - $ref: '#/parameters/Hello-Name'
       tags:
         - General
-      operationId: "nakadi-mock-clj.api/get-hello"
+      operationId: "net.zalando.nakadi-mock-clj.api/get-hello"
       responses:
         200:
           description: Hello is said
@@ -50,7 +50,7 @@ paths:
         Returns every subscriptions stored in mock server
       tags:
         - Subscription
-      operationId: "nakadi-mock-clj.api/list-subscription"
+      operationId: "net.zalando.nakadi-mock-clj.api/list-subscription"
       responses:
         200:
           description: Ok
@@ -62,7 +62,7 @@ paths:
         Saves new subscription which passed as request body
       tags:
         - Subscription
-      operationId: "nakadi-mock-clj.api/save-subscription"
+      operationId: "net.zalando.nakadi-mock-clj.api/save-subscription"
       responses:
         201:
           description: Saved New
