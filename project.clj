@@ -1,4 +1,4 @@
-(defproject nakadi-mock-clj "0.0.1-SNAPSHOT"
+(defproject net.zalando.nakadi-mock-clj "0.0.1-SNAPSHOT"
   :description "Nakadi-mock rewritten in Clojure/Friboo"
   :url "https://github.bus.zalan.do/jyun/nakadi-mock-clj"
   :min-lein-version "2.0.0"
@@ -7,7 +7,7 @@
                  [danlentz/clj-uuid "0.1.6"]
                  [clj-time "0.12.2"]
                  [org.flatland/useful "0.11.5"]]
-  :main ^:skip-aot nakadi-mock-clj.core
+  :main ^:skip-aot net.zalando.nakadi-mock-clj.core
   :uberjar-name "nakadi-mock-clj.jar"
   :target-path "target/%s"
   :manifest {"Implementation-Version" ~#(:version %)}

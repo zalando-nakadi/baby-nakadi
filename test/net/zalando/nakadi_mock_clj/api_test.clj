@@ -1,4 +1,4 @@
-(ns nakadi-mock-clj.api-test
+(ns net.zalando.nakadi-mock-clj.api-test
   (:require [clojure.test :refer :all]
             [midje.sweet :refer :all]
             [clj-http.client :as http-client]
@@ -6,10 +6,10 @@
             [cheshire.core :as json]
             [clojure.pprint :refer :all]
             [flatland.useful.seq :as useful-seq]
-            [nakadi-mock-clj.test-utils :as test-utils]
-            [nakadi-mock-clj.api :refer :all]
-            [nakadi-mock-clj.subscriptions :as subscriptions]
-            [nakadi-mock-clj.subscriptions-test :as subscriptions-test]))
+            [net.zalando.nakadi-mock-clj.test-utils :as test-utils]
+            [net.zalando.nakadi-mock-clj.api :refer :all]
+            [net.zalando.nakadi-mock-clj.subscriptions :as subscriptions]
+            [net.zalando.nakadi-mock-clj.subscriptions-test :as subscriptions-test]))
 
 (defn decode-some-json-plz []
   (http-client/json-decode

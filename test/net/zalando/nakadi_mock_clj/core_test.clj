@@ -1,10 +1,10 @@
-(ns nakadi-mock-clj.core-test
+(ns net.zalando.nakadi-mock-clj.core-test
   (:require [clojure.test :refer :all]
             [midje.sweet :refer :all]
             [org.zalando.stups.friboo.dev :as dev]
             [com.stuartsierra.component :as component]
             [clj-http.client :as http]
-            [nakadi-mock-clj.core :refer :all]))
+            [net.zalando.nakadi-mock-clj.core :refer :all]))
 
 (deftest test-core-system
   (facts "about run"

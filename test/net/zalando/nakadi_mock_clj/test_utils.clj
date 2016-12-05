@@ -1,7 +1,7 @@
-(ns nakadi-mock-clj.test-utils
+(ns net.zalando.nakadi-mock-clj.test-utils
   (:require [clojure.test :refer :all]
             [midje.sweet :refer :all]
-            [nakadi-mock-clj.core :as core]
+            [net.zalando.nakadi-mock-clj.core :as core]
             [org.zalando.stups.friboo.system :as system]
             [com.stuartsierra.component :as component]
             [org.zalando.stups.friboo.dev :as dev]

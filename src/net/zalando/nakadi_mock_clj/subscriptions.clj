@@ -1,4 +1,4 @@
-(ns nakadi-mock-clj.subscriptions
+(ns net.zalando.nakadi-mock-clj.subscriptions
   (:require [clojure.set :as set]
             [clj-uuid :as uuid]
             [clojure.string :as s]

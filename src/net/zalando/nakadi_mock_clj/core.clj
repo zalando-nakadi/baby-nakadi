@@ -1,10 +1,10 @@
-(ns nakadi-mock-clj.core
+(ns net.zalando.nakadi-mock-clj.core
   (:require [org.zalando.stups.friboo.config :as config]
             [org.zalando.stups.friboo.system :as system]
             [org.zalando.stups.friboo.system.http :as http]
             [org.zalando.stups.friboo.log :as log]
             [com.stuartsierra.component :as component]
-            [nakadi-mock-clj.api :as api])
+            [net.zalando.nakadi-mock-clj.api :as api])
   (:gen-class))
 
 (def default-http-config

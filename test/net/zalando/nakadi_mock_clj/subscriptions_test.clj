@@ -1,7 +1,7 @@
-(ns nakadi-mock-clj.subscriptions-test
+(ns net.zalando.nakadi-mock-clj.subscriptions-test
   (:require [clojure.test :refer :all]
             [midje.sweet :refer :all]
-            [nakadi-mock-clj.subscriptions :as subscriptions]))
+            [net.zalando.nakadi-mock-clj.subscriptions :as subscriptions]))
 
 
 (def ^:const uuid-regex
