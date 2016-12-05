@@ -4,10 +4,10 @@
     - 이거 그냥 전체 네임스페이스말고, 그냥 artifact이름만 바꿀까.
     - 역시 대세는 artifact이름이랑 ns모두 바꾸는거.
 
-* TODO refactor tests
+* DONE refactor tests
   - 이거 중복된 부분들 추려내서 defn으로 리팩터.
 
-* TODO doc-strs & comments
+* DONE doc-strs & comments
   - doc-str들 좀 갖다 붙이자.
 
 * TODO organize imports & linter?

@@ -53,6 +53,23 @@
                     (fact "expect content-type =~ /json/" ((:headers resp) "Content-Type") => #"json")
                     (fact "empty subscription list" (:body-json resp) => []))))))
 
+(defn field-related-exception-facts
+  [resp expect-status expect-type expect-fields]
+  (let [body (:body-json resp)]
+    (fact (:status resp) => expect-status)
+    (fact (body "type") => expect-type)
+    (fact (body "message") => #(and (string? %) (not (empty? %))))
+    (fact (body "fields") => expect-fields)))
+
+(defn post-subscription-facts
+  [s resp expect-status]
+  (let [body-post (:body-json resp)]
+    (fact (:status resp) => expect-status)                    
+    (fact (subscriptions/subscription=? s body-post) => true)
+    (fact (body-post "id") => subscriptions-test/uuid-regex)
+    (fact (body-post "created_at") => subscriptions-test/date-time-regex)
+    (fact (body-post "start_from") => "end")))
+
 (deftest post-subscriptions
   (test-utils/with-server http-port
     (facts "POST /subscriptions"
@@ -77,43 +94,22 @@
                   (let [s {"owning_application" "nakadi-mock"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"}
-                        resp-post1 (api-post-subscriptions http-port s)
-                        body-post1 (:body-json resp-post1)
-                        resp-post2 (api-post-subscriptions http-port s)
-                        body-post2 (:body-json resp-post2)]
+                        resp-post-1 (api-post-subscriptions http-port s)
+                        resp-post-2 (api-post-subscriptions http-port s)]
                     (facts "..first post should be appended"
-                           (fact (:status resp-post1) => 201)                    
-                           (fact (subscriptions/subscription=? s body-post1) => true)
-                           (fact (body-post1 "id") => subscriptions-test/uuid-regex)
-                           (fact (body-post1 "created_at") => subscriptions-test/date-time-regex)
-                           (fact (body-post1 "start_from") => "end"))
+                           (post-subscription-facts s resp-post-1 201))
                     (facts "..second post should not be appended"
-                           (fact (:status resp-post2) => 200)
-                           (fact (subscriptions/subscription=? s body-post2) => true)
-                           (fact (body-post1 "id") => subscriptions-test/uuid-regex)
-                           (fact (body-post1 "created_at") => subscriptions-test/date-time-regex)
-                           (fact (body-post1 "start_from") => "end"))))
+                           (post-subscription-facts s resp-post-2 200))))
            (facts "returns a Bad Request error on unknown fields"
                   (let [s {"owning_application" "nakadi-mock"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"
                            "FOO" "BAR"}
-                        resp (api-post-subscriptions http-port s)
-                        body (:body-json resp)]
-                    (fact (:status resp) => 400)
-                    (fact (body "type") => "unknown-fields")
-                    (fact (body "message") => #(and (string? %) (not (empty? %))))
-                    (fact (body "fields") => ["FOO"])))
+                        resp (api-post-subscriptions http-port s)]
+                    (field-related-exception-facts resp 400 "unknown-fields" ["FOO"])))
            (facts "returns an Unprocessable Entity error on missing fields"
                   (let [s {"application" "nakadi-mock"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"}
-                        resp (api-post-subscriptions http-port s)
-                        body (:body-json resp)]
-                    (fact (:status resp) => 422)
-                    (fact (body "type") => "missing-fields")
-                    (fact (body "message") => #(and (string? %) (not (empty? %))))
-                    (fact (body "fields") => ["owning_application"]))))))
-
-
-
+                        resp (api-post-subscriptions http-port s)]
+                    (field-related-exception-facts resp 422 "missing-fields" ["owning_application"]))))))

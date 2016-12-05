@@ -105,37 +105,47 @@
     (facts (subscriptions/subscription=? s s2) => true)
     (facts (subscriptions/subscription=? s t2) => false)
     (facts (subscriptions/subscription=? s t3) => false)))
-  
+
+(defn correctly-appended-subscript-facts
+  [added? s s2 expect-added?]
+  (fact added? => expect-added?)
+  (fact (s2 "event_types") => (s "event_types"))
+  (fact (s2 "owning_application") => (s "owning_application"))
+  (fact (s2 "consumer_group") => (s "consumer_group"))
+  (fact (s2 "start_from") => "end")
+  (fact (s2 "id") => uuid-regex)
+  (fact (s2 "created_at") => date-time-regex))
+
+(defmacro ExceptionInfo-throwing-append+-facts
+  [e-i-type-expect e-i-fields-expect & body]
+  `(facts (try
+            ~@body
+            (catch clojure.lang.ExceptionInfo e#
+              (let [i# (ex-data e#)]
+                (fact (format "..should be a %s typed exception" ~e-i-type-expect)
+                      (:type i#) => ~e-i-type-expect)
+                (fact (format "..should contains %s in :fields" ~e-i-fields-expect)
+                      (:fields i#) => ~e-i-fields-expect)
+                (throw e#)))) => (throws clojure.lang.ExceptionInfo)))
+
 (deftest the-ultimate-append+-function
   (facts "Cleared & empty"
          (subscriptions/clear-subscriptions))
   (facts "Try append item with some missing fields should fail with specific exception"
-         (try
-           (subscriptions/append-to-subscriptions+ {"foobar" [:e2 :e3]
-                                                    "owning_application" :a2
-                                                    "consumer_group" :g2})
-           (catch clojure.lang.ExceptionInfo e
-             (let [i (ex-data e)]
-               (fact "..should be a :missing-fields typed exception"
-                     (:type i) => :missing-fields)
-               (fact "..should contains 'event_types' in :fields"
-                     (:fields i) => #{"event_types"})
-               (throw e)))) => (throws clojure.lang.ExceptionInfo))
+         (ExceptionInfo-throwing-append+-facts
+          :missing-fields #{"event_types"}
+          (subscriptions/append-to-subscriptions+ {"foobar" [:e2 :e3]
+                                                   "owning_application" :a2
+                                                   "consumer_group" :g2})))
   (facts "..should be empty now"
          (empty? @subscriptions/subscriptions) => true)
   (facts "Try append item with some unknown fields should fail with specific exception"
-         (try
-           (subscriptions/append-to-subscriptions+ {"my-name-is-Max" 42
-                                                    "event_types" [:e2 :e3]
-                                                    "owning_application" :a2
-                                                    "consumer_group" :g2})
-           (catch clojure.lang.ExceptionInfo e
-             (let [i (ex-data e)]
-               (fact "..should be a :unknown-fields typed exception"
-                     (:type i) => :unknown-fields)
-               (fact "..should contains 'my-name-is-Max' in :fields"
-                     (:fields i) => #{"my-name-is-Max"})
-               (throw e)))) => (throws clojure.lang.ExceptionInfo))
+         (ExceptionInfo-throwing-append+-facts
+          :unknown-fields #{"my-name-is-Max"}
+          (subscriptions/append-to-subscriptions+ {"my-name-is-Max" 42
+                                                   "event_types" [:e2 :e3]
+                                                   "owning_application" :a2
+                                                   "consumer_group" :g2})))
   (facts "..should be empty now"
          (empty? @subscriptions/subscriptions) => true)
   (let [s {"event_types" [:e2 :e3]
@@ -143,19 +153,7 @@
            "consumer_group" :g2}]
     (facts "Try append item with correct fields should be alright and returns [true decorated-item]"
            (let [[added? s2] (subscriptions/append-to-subscriptions+ s)]
-             (fact added? => true)
-             (fact (s2 "event_types") => (s "event_types"))
-             (fact (s2 "owning_application") => (s "owning_application"))
-             (fact (s2 "consumer_group") => (s "consumer_group"))
-             (fact (s2 "start_from") => "end")
-             (fact (s2 "id") => uuid-regex)
-             (fact (s2 "created_at") => date-time-regex)))
+             (correctly-appended-subscript-facts added? s s2 true)))
     (facts "Try append item with already appended item should returns [false item-in-subscriptions]"
            (let [[added? s2] (subscriptions/append-to-subscriptions+ s)]
-             (fact added? => false)
-             (fact (s2 "event_types") => (s "event_types"))
-             (fact (s2 "owning_application") => (s "owning_application"))
-             (fact (s2 "consumer_group") => (s "consumer_group"))
-             (fact (s2 "start_from") => "end")
-             (fact (s2 "id") => uuid-regex)
-             (fact (s2 "created_at") => date-time-regex)))))
+             (correctly-appended-subscript-facts added? s s2 false)))))
