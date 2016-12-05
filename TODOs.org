@@ -1,8 +1,28 @@
 
-* TODO refactor namespaces.
-  - --> net.zalando...
+* TODO refactor namespaces
+  - --> net.zalando?
+    - 이거 그냥 전체 네임스페이스말고, 그냥 artifact이름만 바꿀까.
+    - 역시 대세는 artifact이름이랑 ns모두 바꾸는거.
 
-* TODO write tests.
+* TODO refactor tests
+  - 이거 중복된 부분들 추려내서 defn으로 리팩터.
+
+* TODO doc-strs & comments
+  - doc-str들 좀 갖다 붙이자.
+
+* TODO organize imports & linter?
+  - 포매팅이랑 organize imports도 같이 되는거 있으면 좋을듯.
+  - eastwood?
+
+* DONE core.spec?
+  - 1.9에서는 기본 지원인데, 1.8을 Friboo 때문에 쓰고 있는데,
+    - Backport도
+      있긴하다. https://github.com/tonsky/clojure-future-spec
+      - 근데, 그렇게까지 써야할까 고민.
+  - 일단 이건 개인적으로 공부하고 써보는건 어떨까 생각.
+    - 취소.
+
+* DONE write tests.
   - SEE: https://github.com/zalando-stups/pierone
 
 

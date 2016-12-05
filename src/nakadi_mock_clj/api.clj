@@ -35,7 +35,9 @@
   [this params request]
   (r/response @subscriptions/subscriptions))
 
-(defn- request-json [request]
+(defn- request-json
+  "Parses request body as JSON"
+  [request]
   (let [body-reader (io/reader (:body request))
         body-str (slurp body-reader)]
     (json/decode body-str)))
@@ -44,13 +46,15 @@
   (r/status (r/response (merge e-i {:message msg})) status))
   
 (defn save-subscription
-  "Save given subscription"
+  "Saves subscription"
   [this params request]
   (let [req-json (request-json request)]
-    (try (let [[added? s] (subscriptions/append-to-subscriptions+ req-json)
+    (try (let [[added? s] (subscriptions/append-to-subscriptions+ req-json) ; try to append.
                status-code (if added? 201 200)]
+           ;; succeed! 201 -or- 200.
            (r/status (r/response s) status-code))
          (catch clojure.lang.ExceptionInfo e
+           ;; invalid request.
            (let [i (ex-data e)]
              (case (:type i)
                :unknown-fields
