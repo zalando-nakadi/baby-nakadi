@@ -1,5 +1,5 @@
 
-* TODO refactor namespaces
+* DONE refactor namespaces
   - --> net.zalando?
     - 이거 그냥 전체 네임스페이스말고, 그냥 artifact이름만 바꿀까.
     - 역시 대세는 artifact이름이랑 ns모두 바꾸는거.

@@ -18,9 +18,17 @@
   ([] (local-date-time-str-now (t-local/local-now)))
   ([dt] (t-fmt/unparse created-at-formatter dt)))
 
-(def subscriptions
+(def ^:dynamic subscriptions
   "Subscriptions STM'd list"
   (ref []))
+
+(defmacro with-own-subscriptions
+  "Runs body within own-subscriptions binding, returns seq
+  of [result-of-body own-subscriptions]."
+  [& body]
+  `(binding [subscriptions (ref [])]
+     (let [body-result# (do ~@body)]
+       [subscriptions body-result#])))
 
 (defn clear-subscriptions
   "Empties saved subscriptions"
