@@ -28,8 +28,9 @@
                   (count @subscriptions/subscriptions) => 1)
             (fact "..also it must equal with this seq"
                   @subscriptions/subscriptions => [some-stupid-example]))
-          (fact "..after with-own-subscriptions, it come back to before state"
-                @subscriptions/subscriptions => before-subscriptions))))                                                    
+          (fact "..after with-own-subscriptions, it come back to
+                before state" @subscriptions/subscriptions =>
+                before-subscriptions))))
 
 (deftest basic-subscriptions
   (fact "just a dumb append one"
@@ -51,9 +52,11 @@
              (fact (str "should contains only " s1)
                    (subscriptions/in-subscriptions? s1) => s1)
              (fact (str "shouldn't contains " s2)
-                   (subscriptions/in-subscriptions? s2) => #(or (nil? %) (false? %)))
+                   (subscriptions/in-subscriptions? s2)
+                   => #(or (nil? %) (false? %)))
              (fact (str "also shouldn't contains " s3)
-                   (subscriptions/in-subscriptions? s3) => #(or (nil? %) (false? %))))))
+                   (subscriptions/in-subscriptions? s3)
+                   => #(or (nil? %) (false? %))))))
   (facts "find missing fields"
          (let [s-ok {"event_types" [:e1 :e2]
                      "owning_application" :a1
@@ -64,7 +67,8 @@
            (fact "should be empty missing fields"
                  (subscriptions/find-missing-fields s-ok) => #{})
            (fact "should be one 'foobar' missing field"
-                 (subscriptions/find-missing-fields s-missing) => #{"event_types"})))                                     
+                 (subscriptions/find-missing-fields s-missing)
+                 => #{"event_types"})))                                     
   (facts "find unknown fields"
          (let [s-ok {"event_types" [:e1 :e2]
                      "owning_application" :a1
@@ -75,7 +79,8 @@
            (fact "should be empty unknown fields"
                  (subscriptions/find-unknown-fields s-ok) => #{})
            (fact "should be one 'foobar' unknown field"
-                 (subscriptions/find-unknown-fields s-unknown) => #{"foobar"}))) 
+                 (subscriptions/find-unknown-fields s-unknown)
+                 => #{"foobar"}))) 
   (facts "decorate subscription"
          (let [s-before {"event_types" [:e1 :e2]
                          "owning_application" :a1
@@ -95,7 +100,8 @@
   (let [s {"event_types" [:e1 :e2]
            "owning_application" :a1
            "consumer_group" :g1}]
-    (facts (subscriptions/in-subscriptions? s []) => #(or (false? %) (nil? %)))
+    (facts (subscriptions/in-subscriptions? s [])
+           => #(or (false? %) (nil? %)))
     (facts (subscriptions/in-subscriptions? s [s]) => s)))
 
 (deftest subscription-equality
@@ -133,15 +139,18 @@
             ~@body
             (catch clojure.lang.ExceptionInfo e#
               (let [i# (ex-data e#)]
-                (fact (format "..should be a %s typed exception" ~e-i-type-expect)
+                (fact (format "..should be a %s typed exception"
+                              ~e-i-type-expect)
                       (:type i#) => ~e-i-type-expect)
-                (fact (format "..should contains %s in :fields" ~e-i-fields-expect)
+                (fact (format "..should contains %s in :fields"
+                              ~e-i-fields-expect)
                       (:fields i#) => ~e-i-fields-expect)
                 (throw e#)))) => (throws clojure.lang.ExceptionInfo)))
 
 (deftest the-ultimate-append+-function
   (subscriptions/with-own-subscriptions
-    (facts "Try append item with some missing fields should fail with specific exception"
+    (facts "Try append item with some missing fields should fail with
+    specific exception"
            (ExceptionInfo-throwing-append+-facts
             :missing-fields #{"event_types"}
             (subscriptions/append-to-subscriptions+ {"foobar" [:e2 :e3]
@@ -149,7 +158,8 @@
                                                      "consumer_group" :g2})))
     (facts "..should be empty now"
            (empty? @subscriptions/subscriptions) => true)
-    (facts "Try append item with some unknown fields should fail with specific exception"
+    (facts "Try append item with some unknown fields should fail with
+    specific exception"
            (ExceptionInfo-throwing-append+-facts
             :unknown-fields #{"my-name-is-Max"}
             (subscriptions/append-to-subscriptions+ {"my-name-is-Max" 42
@@ -161,9 +171,11 @@
     (let [s {"event_types" [:e2 :e3]
              "owning_application" :a2
              "consumer_group" :g2}]
-      (facts "Try append item with correct fields should be alright and returns [true decorated-item]"
+      (facts "Try append item with correct fields should be alright
+      and returns [true decorated-item]"
              (let [[added? s2] (subscriptions/append-to-subscriptions+ s)]
                (correctly-appended-subscript-facts added? s s2 true)))
-      (facts "Try append item with already appended item should returns [false item-in-subscriptions]"
+      (facts "Try append item with already appended item should
+      returns [false item-in-subscriptions]"
              (let [[added? s2] (subscriptions/append-to-subscriptions+ s)]
                (correctly-appended-subscript-facts added? s s2 false))))))

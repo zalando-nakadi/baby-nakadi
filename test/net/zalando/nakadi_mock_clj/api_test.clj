@@ -13,7 +13,8 @@
 
 (defn decode-some-json-plz []
   (http-client/json-decode
-   "{\"name\": \"foo\", \"age\": 42, \"grades\":{\"English\": \"A\", \"Korean\":\"F\"}}"))
+   "{\"name\": \"foo\", \"age\": 42, \"grades\":{\"English\": \"A\",
+   \"Korean\":\"F\"}}"))
 
 (defonce decoded-json-value-plz
   {"name" "foo", "age" 42,
@@ -38,7 +39,8 @@
 (defn api-post-subscriptions [port s]
   (let [s-json (json/encode s)
         resp (try (http-client/post (api-url port ["subscriptions"])
-                                    {:body s-json :content-type "application/json"})
+                                    {:body s-json
+                                     :content-type "application/json"})
                   (catch clojure.lang.ExceptionInfo e
                     (ex-data e)))]
     (merge resp {:body-json (json/parse-string (:body resp))})))
@@ -50,15 +52,18 @@
                 (test-utils/with-server http-port
                   (let [resp (api-list-subscriptions http-port)]
                     (fact "expect http status 200" (:status resp) => 200)
-                    (fact "expect content-type =~ /json/" ((:headers resp) "Content-Type") => #"json")
-                    (fact "empty subscription list" (:body-json resp) => []))))))
+                    (fact "expect content-type =~ /json/"
+                          ((:headers resp) "Content-Type") => #"json")
+                    (fact "empty subscription list"
+                          (:body-json resp) => []))))))
 
 (defn field-related-exception-facts
   [resp expect-status expect-type expect-fields]
   (let [body (:body-json resp)]
     (fact (:status resp) => expect-status)
     (fact (body "type") => expect-type)
-    (fact (body "message") => #(and (string? %) (not (empty? %))))
+    (fact (body "message")
+          => #(and (string? %) (not (empty? %))))
     (fact (body "fields") => expect-fields)))
 
 (defn post-subscription-facts
@@ -67,7 +72,8 @@
     (fact (:status resp) => expect-status)                    
     (fact (subscriptions/subscription=? s body-post) => true)
     (fact (body-post "id") => subscriptions-test/uuid-regex)
-    (fact (body-post "created_at") => subscriptions-test/date-time-regex)
+    (fact (body-post "created_at")
+          => subscriptions-test/date-time-regex)
     (fact (body-post "start_from") => "end")))
 
 (deftest post-subscriptions
@@ -83,14 +89,17 @@
                            "consumer_group" "slurper"}
                         resp-post (api-post-subscriptions http-port s)]
                     (facts "..returned value should be decorated"
-                           (fact (subscriptions/subscription=? s (:body-json resp-post)) => true))   
+                           (fact (subscriptions/subscription=? s (:body-json resp-post))
+                                 => true))   
                     (facts "..shouldn't be empty"
                            (let [resp-list (api-list-subscriptions http-port)
                                  result-list (:body-json resp-list)]
                              (fact (count result-list) => 1)
-                             (fact (subscriptions/subscription=? s (first result-list)) => true))))
+                             (fact (subscriptions/subscription=? s (first result-list))
+                                   => true))))
                   (subscriptions/clear-subscriptions))
-           (facts "returns the same subscription using the same identity properties"
+           (facts "returns the same subscription using the same
+           identity properties"
                   (let [s {"owning_application" "nakadi-mock"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"}
@@ -106,10 +115,12 @@
                            "consumer_group" "slurper"
                            "FOO" "BAR"}
                         resp (api-post-subscriptions http-port s)]
-                    (field-related-exception-facts resp 400 "unknown-fields" ["FOO"])))
+                    (field-related-exception-facts resp 400
+                                                   "unknown-fields" ["FOO"])))
            (facts "returns an Unprocessable Entity error on missing fields"
                   (let [s {"application" "nakadi-mock"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"}
                         resp (api-post-subscriptions http-port s)]
-                    (field-related-exception-facts resp 422 "missing-fields" ["owning_application"]))))))
+                    (field-related-exception-facts resp 422
+                                                   "missing-fields" ["owning_application"]))))))

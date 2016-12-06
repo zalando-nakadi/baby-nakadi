@@ -20,9 +20,10 @@
   (dev/reload-log4j2-config)
   (#'system/set-log-level! "DEBUG" :logger-name "nakadi_mock_clj")
   (#'system/set-log-level! "DEBUG" :logger-name "org.zalando.stups")
-  (alter-var-root #'system (constantly (core/run (merge {:system-log-level "INFO"}
-                                                        (dev/load-dev-config "./test-config.edn")
-                                                        extra-config)))))
+  (alter-var-root #'system
+                  (constantly (core/run (merge {:system-log-level "INFO"}
+                                               (dev/load-dev-config "./test-config.edn")
+                                               extra-config)))))
 
 (defn stop
   "Stops the system if it is currently running, updates the Var
