@@ -1,4 +1,8 @@
-(ns net.zalando.baby-nakadi.api-schema-registry)
+(ns net.zalando.baby-nakadi.api-schema-registry
+  (:require [taoensso.timbre :as timbre
+             :refer [log  trace  debug  info  warn  error  fatal  report
+                     logf tracef debugf infof warnf errorf fatalf reportf
+                     spy get-env]]))
 
 ;; TODO:
 (defn get-event-types
@@ -7,7 +11,8 @@
 
 (defn post-event-type
   [this params request]
-  nil)
+  (info "params = " params)
+  {:msg :wtf})
 
 (defn get-event-type
   [this params request]

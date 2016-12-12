@@ -1,3 +1,4 @@
+* TODO implement events and event-types endpoints.
 
 * DONE refactor namespaces
   - --> net.zalando?

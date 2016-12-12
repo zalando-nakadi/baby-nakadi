@@ -3,13 +3,13 @@
 
 (defn semver-str
   [{:keys [major minor patch pre-release build] :as m}]
-  (let [s (atom (str/join "." [major minor patch]))]
+  (let [sbuf (StringBuffer. (str/join "." [major minor patch]))]
     (when-not (nil? pre-release)
-      (swap! s str (format "-%s" pre-release)))
+      (.append sbuf (format "-%s" pre-release)))
     (when-not (nil? build)
-      (swap! s str (format "+%s" build)))
+      (.append sbuf (format "+%s" build)))
     ;; result.
-    @s))
+    (.toString sbuf)))
   
 
 
