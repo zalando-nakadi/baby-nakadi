@@ -9,7 +9,7 @@
             [midje.repl :refer :all]
             [com.stuartsierra.component :as component]
             [clojure.test :refer [run-tests run-all-tests]]
-            [net.zalando.nakadi-mock-clj.core :as core]
+            [net.zalando.baby-nakadi.core :as core]
             [org.zalando.stups.friboo.system :as system]
             [org.zalando.stups.friboo.dev :as dev]))
 
@@ -20,7 +20,7 @@
   "Starts the system running, sets the Var #'system."
   [extra-config]
   (dev/reload-log4j2-config)
-  (#'system/set-log-level! "DEBUG" :logger-name "net.zalando.nakadi_mock_clj")
+  (#'system/set-log-level! "DEBUG" :logger-name "net.zalando.baby_nakadi")
   (#'system/set-log-level! "DEBUG" :logger-name "org.zalando.stups")
   (alter-var-root #'system (constantly (core/run (merge {:system-log-level "INFO"}
                                                         (dev/load-dev-config "./dev-config.edn")
@@ -49,7 +49,7 @@
 
 (comment
   (defn run-tests []
-    (run-all-tests #"net.zalando.nakadi-mock-clj.*-test"))
+    (run-all-tests #"net.zalando.baby-nakadi.*-test"))
 
   (defn tests
     "Stops the system, reloads modified source files and runs tests"

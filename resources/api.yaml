@@ -2,13 +2,13 @@ swagger: '2.0'
 
 # basic meta information
 info:
-  title: nakadi-mock-clj
+  title: baby-nakadi
   version: '1.0'
-  description: Very nice nakadi-mock-clj
+  description: Very nice baby-nakadi
 
 externalDocs:
   description: External docs
-  url: https://github.bus.zalan.do/jyun/nakadi-mock-clj
+  url: https://github.bus.zalan.do/jyun/baby-nakadi
 
 # technical configuration
 basePath: /
@@ -36,7 +36,7 @@ paths:
         - $ref: '#/parameters/Hello-Name'
       tags:
         - General
-      operationId: "net.zalando.nakadi-mock-clj.api/get-hello"
+      operationId: "net.zalando.baby-nakadi.api/get-hello"
       responses:
         200:
           description: Hello is said
@@ -50,7 +50,7 @@ paths:
         Returns every subscriptions stored in mock server
       tags:
         - Subscription
-      operationId: "net.zalando.nakadi-mock-clj.api/list-subscription"
+      operationId: "net.zalando.baby-nakadi.api/list-subscription"
       responses:
         200:
           description: Ok
@@ -62,7 +62,7 @@ paths:
         Saves new subscription which passed as request body
       tags:
         - Subscription
-      operationId: "net.zalando.nakadi-mock-clj.api/save-subscription"
+      operationId: "net.zalando.baby-nakadi.api/save-subscription"
       responses:
         201:
           description: Saved New

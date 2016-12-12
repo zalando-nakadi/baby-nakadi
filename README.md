@@ -1,4 +1,4 @@
-# nakadi-mock-clj
+# baby-nakadi
 
 A project based on Friboo library.
 

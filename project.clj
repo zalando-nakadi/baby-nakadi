@@ -1,14 +1,14 @@
-(defproject net.zalando.nakadi-mock-clj "0.0.1-SNAPSHOT"
+(defproject net.zalando.baby-nakadi "0.0.1-SNAPSHOT"
   :description "Nakadi-mock rewritten in Clojure/Friboo"
-  :url "https://github.bus.zalan.do/jyun/nakadi-mock-clj"
+  :url "https://github.bus.zalan.do/jyun/baby-nakadi"
   :min-lein-version "2.0.0"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.zalando.stups/friboo "2.0.0-beta5"]
                  [danlentz/clj-uuid "0.1.6"]
                  [clj-time "0.12.2"]
                  [org.flatland/useful "0.11.5"]]
-  :main ^:skip-aot net.zalando.nakadi-mock-clj.core
-  :uberjar-name "nakadi-mock-clj.jar"
+  :main ^:skip-aot net.zalando.baby-nakadi.core
+  :uberjar-name "baby-nakadi.jar"
   :target-path "target/%s"
   :manifest {"Implementation-Version" ~#(:version %)}
   :plugins [[lein-cloverage "1.0.9"]
