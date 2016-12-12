@@ -6,7 +6,9 @@
                  [org.zalando.stups/friboo "2.0.0-beta5"]
                  [danlentz/clj-uuid "0.1.6"]
                  [clj-time "0.12.2"]
-                 [org.flatland/useful "0.11.5"]]
+                 [org.flatland/useful "0.11.5"]
+                 [grimradical/clj-semver "0.3.0-SNAPSHOT"]
+                 ]
   :main ^:skip-aot net.zalando.baby-nakadi.core
   :uberjar-name "baby-nakadi.jar"
   :target-path "target/%s"
