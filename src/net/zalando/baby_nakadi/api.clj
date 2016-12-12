@@ -1,9 +1,9 @@
-(ns net.zalando.nakadi-mock-clj.api
+(ns net.zalando.baby-nakadi.api
   (:require [org.zalando.stups.friboo.ring :refer :all]
             [org.zalando.stups.friboo.log :as log]
             [org.zalando.stups.friboo.config :refer [require-config]]
             [com.stuartsierra.component :as component]
-            [net.zalando.nakadi-mock-clj.subscriptions :as subscriptions]
+            [net.zalando.baby-nakadi.subscriptions :as subscriptions]
             [ring.util.response :as r]
             [clojure.set :as set]
             [cheshire.core :as json]

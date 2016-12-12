@@ -1,4 +1,4 @@
-(ns net.zalando.nakadi-mock-clj.api-test
+(ns net.zalando.baby-nakadi.api-test
   (:require [clojure.test :refer :all]
             [midje.sweet :refer :all]
             [clj-http.client :as http-client]
@@ -6,10 +6,10 @@
             [cheshire.core :as json]
             [clojure.pprint :refer :all]
             [flatland.useful.seq :as useful-seq]
-            [net.zalando.nakadi-mock-clj.test-utils :as test-utils]
-            [net.zalando.nakadi-mock-clj.api :refer :all]
-            [net.zalando.nakadi-mock-clj.subscriptions :as subscriptions]
-            [net.zalando.nakadi-mock-clj.subscriptions-test :as subscriptions-test]))
+            [net.zalando.baby-nakadi.test-utils :as test-utils]
+            [net.zalando.baby-nakadi.api :refer :all]
+            [net.zalando.baby-nakadi.subscriptions :as subscriptions]
+            [net.zalando.baby-nakadi.subscriptions-test :as subscriptions-test]))
 
 (defn decode-some-json-plz []
   (http-client/json-decode
@@ -84,7 +84,7 @@
                   (facts "..should be empty"
                          (let [resp (api-list-subscriptions http-port)]
                            (fact (:body-json resp) => [])))
-                  (let [s {"owning_application" "nakadi-mock"
+                  (let [s {"owning_application" "baby-nakadi"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"}
                         resp-post (api-post-subscriptions http-port s)]
@@ -100,7 +100,7 @@
                   (subscriptions/clear-subscriptions))
            (facts "returns the same subscription using the same
            identity properties"
-                  (let [s {"owning_application" "nakadi-mock"
+                  (let [s {"owning_application" "baby-nakadi"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"}
                         resp-post-1 (api-post-subscriptions http-port s)
@@ -110,7 +110,7 @@
                     (facts "..second post should not be appended"
                            (post-subscription-facts s resp-post-2 200))))
            (facts "returns a Bad Request error on unknown fields"
-                  (let [s {"owning_application" "nakadi-mock"
+                  (let [s {"owning_application" "baby-nakadi"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"
                            "FOO" "BAR"}
@@ -118,7 +118,7 @@
                     (field-related-exception-facts resp 400
                                                    "unknown-fields" ["FOO"])))
            (facts "returns an Unprocessable Entity error on missing fields"
-                  (let [s {"application" "nakadi-mock"
+                  (let [s {"application" "baby-nakadi"
                            "event_types" ["event1"]
                            "consumer_group" "slurper"}
                         resp (api-post-subscriptions http-port s)]
