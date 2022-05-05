@@ -1,5 +1,7 @@
 # baby-nakadi
 
+**DEPRECATED: This project is archived and will not be actively maintained anymore.**
+
 A project based on Friboo library.
 
 ## Development
